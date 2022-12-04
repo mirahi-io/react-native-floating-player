@@ -5,23 +5,20 @@ import {
 } from '@react-navigation/native-stack';
 import {HomeScreen} from './screens/HomeScreen';
 import {PlayerModal} from './screens/PlayerModal';
-import {CustomBottomTabBar} from './components/CustomBottomTabBar';
 import React from 'react';
-import {LibraryScreen} from './screens/LibraryScreen';
 import {Track} from 'react-native-track-player';
+import {CustomBottomTabBar} from './components/CustomBottomTabBar';
 
 export enum Routes {
   ROOT = 'root',
   PLAYER = 'player',
   HOME = 'home',
-  LIBRARY = 'library',
 }
 
 export type RootStackParamList = {
   [Routes.ROOT]: undefined;
   [Routes.PLAYER]: {index: number; position?: number; queue: Track[]};
   [Routes.HOME]: undefined;
-  [Routes.LIBRARY]: undefined;
 };
 
 export type RootStackScreenProps<T extends Routes> = NativeStackScreenProps<
@@ -31,6 +28,21 @@ export type RootStackScreenProps<T extends Routes> = NativeStackScreenProps<
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 const TabStack = createBottomTabNavigator<RootStackParamList>();
+
+const TabNavigator = () => {
+  return (
+    <TabStack.Navigator tabBar={CustomBottomTabBar}>
+      <TabStack.Screen
+        component={HomeScreen}
+        name={Routes.HOME}
+        options={{
+          headerTitle: 'Home',
+          title: 'Home',
+        }}
+      />
+    </TabStack.Navigator>
+  );
+};
 
 export const RootNavigator = () => {
   return (
@@ -46,28 +58,5 @@ export const RootNavigator = () => {
         options={{presentation: 'modal'}}
       />
     </RootStack.Navigator>
-  );
-};
-
-export const TabNavigator = () => {
-  return (
-    <TabStack.Navigator tabBar={CustomBottomTabBar}>
-      <TabStack.Screen
-        component={HomeScreen}
-        name={Routes.HOME}
-        options={{
-          headerTitle: 'Home',
-          title: 'Home',
-        }}
-      />
-      <TabStack.Screen
-        component={LibraryScreen}
-        name={Routes.LIBRARY}
-        options={{
-          headerTitle: 'Library',
-          title: 'Library',
-        }}
-      />
-    </TabStack.Navigator>
   );
 };

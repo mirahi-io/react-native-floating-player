@@ -6,13 +6,6 @@ import TrackPlayer, {
   useProgress,
   useTrackPlayerEvents,
 } from 'react-native-track-player';
-import {ControlsProps} from './components/Controls';
-
-export enum ControlsCapability {
-  PLAY_PAUSE = 'play-pause',
-  SKIP_TO_NEXT = 'skip-to-next',
-  SKIP_TO_PREVIOUS = 'skip-to-previous',
-}
 
 export const useInitPlayer = () => {
   useEffect(() => {
@@ -24,28 +17,29 @@ export const useInitPlayer = () => {
   }, []);
 };
 
+export type Controls = {
+  position: number;
+  isPlaying: boolean;
+  duration: number;
+  startTrack: () => Promise<void>;
+  skipToNextTrack: () => Promise<void>;
+  skipToPreviousTrack: () => Promise<void>;
+};
+
 export type UsePlayerControlsResponse = {
-  queue: Track[];
-  setQueue: Dispatch<SetStateAction<Track[]>>;
   currentTrack?: Track;
   currentTrackIndex?: number;
   setCurrentTrack: Dispatch<SetStateAction<Track | undefined>>;
-  controlsProps: ControlsProps;
+  controls: Controls;
 };
 
 export const usePlayerControls = (): UsePlayerControlsResponse => {
   const [playerState, setPlayerState] = useState<State>();
   const [currentTrack, setCurrentTrack] = useState<Track>();
   const [currentTrackIndex, setCurrentTrackIndex] = useState<number>();
-  const [queue, setQueue] = useState<Track[]>([]);
 
   useTrackPlayerEvents(
-    [
-      Event.PlaybackTrackChanged,
-      Event.RemotePlay,
-      Event.RemotePause,
-      Event.PlaybackState,
-    ],
+    [Event.PlaybackTrackChanged, Event.PlaybackState],
     async event => {
       if (
         event.type === Event.PlaybackTrackChanged &&
@@ -82,21 +76,10 @@ export const usePlayerControls = (): UsePlayerControlsResponse => {
   };
 
   return {
-    controlsProps: {
-      capabilities: {
-        [ControlsCapability.PLAY_PAUSE]: {
-          disabled: !currentTrack,
-          onPress: startTrack,
-        },
-        [ControlsCapability.SKIP_TO_NEXT]: {
-          disabled: !currentTrack,
-          onPress: skipToNextTrack,
-        },
-        [ControlsCapability.SKIP_TO_PREVIOUS]: {
-          disabled: !currentTrack,
-          onPress: skipToPreviousTrack,
-        },
-      },
+    controls: {
+      startTrack,
+      skipToNextTrack,
+      skipToPreviousTrack,
       duration: duration || 25,
       isPlaying:
         playerState !== State.Playing && playerState !== State.Buffering,
@@ -104,8 +87,6 @@ export const usePlayerControls = (): UsePlayerControlsResponse => {
     },
     currentTrack,
     currentTrackIndex,
-    queue,
     setCurrentTrack,
-    setQueue,
   };
 };

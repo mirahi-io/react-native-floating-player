@@ -2,34 +2,29 @@ import React, {FC, useEffect} from 'react';
 import {ActivityIndicator, Image, StyleSheet, Text, View} from 'react-native';
 import {Controls} from '../components/Controls';
 import {usePlayerControls} from '../player.utils';
-import TrackPlayer, {Track} from 'react-native-track-player';
+import TrackPlayer from 'react-native-track-player';
 import {RootStackScreenProps, Routes} from '../routes';
-
-const handleQueue = async (
-  queue: Track[],
-  index: number,
-  position?: number,
-) => {
-  await TrackPlayer.add(queue);
-  if (index >= 0) {
-    await TrackPlayer.skip(index);
-  }
-  if (position && position > 0) {
-    await TrackPlayer.seekTo(position);
-  }
-};
 
 export const PlayerModal: FC<RootStackScreenProps<Routes.PLAYER>> = ({
   route: {
     params: {position = 0, index, queue},
   },
 }) => {
-  const {controlsProps, setQueue, currentTrack} = usePlayerControls();
+  const {controls, currentTrack} = usePlayerControls();
 
   useEffect(() => {
-    setQueue(queue);
-    handleQueue(queue, index, position);
-  }, [index, position, queue, setQueue]);
+    const handleQueue = async () => {
+      await TrackPlayer.add(queue);
+      if (index >= 0) {
+        await TrackPlayer.skip(index);
+      }
+      if (position && position > 0) {
+        await TrackPlayer.seekTo(position);
+      }
+    };
+
+    handleQueue();
+  }, [index, queue, position]);
 
   if (!currentTrack) {
     return <ActivityIndicator style={styles.centered_horizontal} />;
@@ -47,7 +42,7 @@ export const PlayerModal: FC<RootStackScreenProps<Routes.PLAYER>> = ({
           source={{uri: currentTrack.artwork}}
         />
       )}
-      <Controls {...controlsProps} />
+      <Controls {...controls} />
     </View>
   );
 };

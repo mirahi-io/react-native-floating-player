@@ -1,15 +1,18 @@
 import {NavigationProp, useNavigation} from '@react-navigation/native';
-import {Pressable, StyleSheet, Text, View} from 'react-native';
+import {Button, Pressable, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import {RootStackParamList, Routes} from '../routes';
 import {songs} from '../songs';
-import {useProgress} from 'react-native-track-player';
 import {usePlayerControls} from '../player.utils';
+import Slider from '@react-native-community/slider';
 
 export const FloatingPlayer = () => {
   const {navigate} = useNavigation<NavigationProp<RootStackParamList>>();
-  const {currentTrackIndex, currentTrack} = usePlayerControls();
-  const {position} = useProgress();
+  const {
+    currentTrackIndex,
+    currentTrack,
+    controls: {isPlaying, startTrack, position, duration},
+  } = usePlayerControls();
 
   if (!currentTrack) {
     return null;
@@ -27,14 +30,28 @@ export const FloatingPlayer = () => {
 
   return (
     <Pressable onPress={playerPressHandler}>
-      <View style={styles.row}>
-        <Text>{artist}</Text>
-        <Text>{title}</Text>
+      <View style={styles.container}>
+        <View style={styles.centered_row_space_between}>
+          <Text>
+            {title} - {artist}
+          </Text>
+          <Button title={isPlaying ? 'play' : 'pause'} onPress={startTrack} />
+        </View>
+        <Slider maximumValue={duration} minimumValue={0} value={position} />
       </View>
     </Pressable>
   );
 };
 
 const styles = StyleSheet.create({
-  row: {display: 'flex', flexDirection: 'row'},
+  centered_row_space_between: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  container: {
+    backgroundColor: '#cecece',
+    paddingHorizontal: 8,
+    paddingVertical: 8,
+  },
 });
