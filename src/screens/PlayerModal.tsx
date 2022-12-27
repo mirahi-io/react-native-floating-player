@@ -4,17 +4,18 @@ import {Controls} from '../components/Controls';
 import {usePlayerControls} from '../player.utils';
 import TrackPlayer from 'react-native-track-player';
 import {RootStackScreenProps, Routes} from '../routes';
+import {songs} from '../songs';
 
 export const PlayerModal: FC<RootStackScreenProps<Routes.PLAYER>> = ({
   route: {
-    params: {position = 0, index, queue},
+    params: {position = 0, index},
   },
 }) => {
   const {controls, currentTrack} = usePlayerControls();
 
   useEffect(() => {
     const handleQueue = async () => {
-      await TrackPlayer.add(queue);
+      await TrackPlayer.add(songs);
       if (index >= 0) {
         await TrackPlayer.skip(index);
       }
@@ -24,7 +25,7 @@ export const PlayerModal: FC<RootStackScreenProps<Routes.PLAYER>> = ({
     };
 
     handleQueue();
-  }, [index, queue, position]);
+  }, [index, position]);
 
   if (!currentTrack) {
     return <ActivityIndicator style={styles.centered_horizontal} />;

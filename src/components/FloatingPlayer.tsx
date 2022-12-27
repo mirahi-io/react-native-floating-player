@@ -2,7 +2,6 @@ import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {Button, Pressable, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import {RootStackParamList, Routes} from '../routes';
-import {songs} from '../songs';
 import {usePlayerControls} from '../player.utils';
 import Slider from '@react-native-community/slider';
 
@@ -25,7 +24,6 @@ export const FloatingPlayer = () => {
       index:
         currentTrackIndex && currentTrackIndex >= 0 ? currentTrackIndex : 0,
       position: position,
-      queue: songs,
     });
 
   return (

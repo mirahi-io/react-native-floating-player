@@ -6,7 +6,6 @@ import {
 import {HomeScreen} from './screens/HomeScreen';
 import {PlayerModal} from './screens/PlayerModal';
 import React from 'react';
-import {Track} from 'react-native-track-player';
 import {CustomBottomTabBar} from './components/CustomBottomTabBar';
 
 export enum Routes {
@@ -17,7 +16,7 @@ export enum Routes {
 
 export type RootStackParamList = {
   [Routes.ROOT]: undefined;
-  [Routes.PLAYER]: {index: number; position?: number; queue: Track[]};
+  [Routes.PLAYER]: {index: number; position?: number};
   [Routes.HOME]: undefined;
 };
 

@@ -1,12 +1,11 @@
 import React, {FC} from 'react';
 import {Button, StyleSheet, View} from 'react-native';
 import {RootStackScreenProps, Routes} from '../routes';
-import {songs} from '../songs';
 
 export const HomeScreen: FC<RootStackScreenProps<Routes.HOME>> = ({
   navigation: {navigate},
 }) => {
-  const openPlayer = () => navigate(Routes.PLAYER, {index: 0, queue: songs});
+  const openPlayer = () => navigate(Routes.PLAYER, {index: 0});
 
   return (
     <View style={styles.centered_horizontal}>
